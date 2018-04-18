@@ -1,5 +1,6 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from  crawler4zs.news import News
 
 
 class Spreadsheetator:
@@ -22,20 +23,30 @@ class Spreadsheetator:
         self.trida_ws = self.sheet.worksheet('trida')
 
     def append(self, data):
-        self.trida_ws.insert_row(data, 2, 'USER_ENTERED')
+        if isinstance(data, list):
+            data = sorted(data, key=lambda x: x.date)
+            for row in data:
+                self.trida_ws.insert_row(row.print_format(), 2, 'USER_ENTERED')
+        else:
+            self.trida_ws.insert_row(data.print_format(), 2, 'USER_ENTERED')
 
-    def read_all(self):
-        # list data in first column
-        # values_list = self.trida_ws.col_values(1)
-        # print(values_list)
-
+    def read_all(self, verbose=False):
         data = self.trida_ws.get_all_values()[1:]
-        print(data)
+        news_list = []
+        for row in data:
+            news = News(*row)
+            news_list.append(news)
+
+        # print
+        if verbose:
+            for news in news_list:
+                print(news)
+        return news_list
 
 
 # ----------------------------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     stator = Spreadsheetator()
-    stator.read_all()
+    stator.read_all(verbose=True)
     stator.append(['18.4.2018', 'Nadpis - insert test', 'odkaz - insert test', 'obsah - insert test'])
     stator.read_all()
