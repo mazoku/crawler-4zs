@@ -1,13 +1,17 @@
+#!/home/tomas/projects/crawler-4zs/venv/bin/python
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
-from crawler4zs.news import News
+from news import News
 import datetime
-from crawler4zs.spreadsheetator import Spreadsheetator
+from spreadsheetator import Spreadsheetator
 
 
 class Scrapper:
 
     def __init__(self, base_url, url_class, url_school):
+        print('\n\n---------------------------------------------------------------------------------------')
+        print('Runtime: {}'.format(datetime.datetime.now().strftime("%-d.%-m.%Y %H:%M:%S")))
+
         self.base_url = base_url
         self.url_class = url_class
         self.url_school = url_school
@@ -71,16 +75,22 @@ class Scrapper:
         class_news = self.scrap_class()
 
         # read tracked news
-        print('reading tracked news from sheet ...')
+        print('reading tracked news from sheet ... ', end='')
         tracked_news = self.sheetator.read_all()
+        print('done, found {} news'.format(len(tracked_news)))
 
         # find all untracked news
-        print('finding untracked news ...')
+        print('finding untracked news ... ', end='')
         untracked_news = self.find_untracked_news(tracked_news, class_news)
+        print('done, found {} news'.format(len(untracked_news)))
 
         # write untracked news into the sheet
-        print('writing untracked news ...')
-        self.sheetator.append(untracked_news)
+        if untracked_news:
+            print('writing untracked news ... ', end='')
+            self.sheetator.append(untracked_news)
+            print('done')
+        else:
+            print('no untracked news')
 
         print('all done')
 

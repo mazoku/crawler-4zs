@@ -1,6 +1,6 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from  crawler4zs.news import News
+from  news import News
 
 
 class Spreadsheetator:
