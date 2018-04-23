@@ -12,8 +12,7 @@ class Spreadsheetator:
         scope = ['https://spreadsheets.google.com/feeds',
                  'https://www.googleapis.com/auth/drive']
 
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(
-            '/home/tomas/Dropbox/Documents/keys/Scrapper-4ZS-7ef5a34bb156.json', scope)
+        credentials = ServiceAccountCredentials.from_json_keyfile_name('Scrapper-4ZS-7ef5a34bb156.json', scope)
 
         gc = gspread.authorize(credentials)
 
